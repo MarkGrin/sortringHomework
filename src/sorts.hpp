@@ -9,7 +9,7 @@ namespace HWSorts {
 /**
  * Sorting data using bubble sort.
  *
- * ConstRandomIterator - Iterator that complies to RandomAccessIterator concept
+ * RandomIterator - Iterator that complies to RandomAccessIterator concept
  * Type dereferenced by iterator must comply to:
  *  Swappable, MoveAssignable and MoveConstructable concept
  * Comp must be must compy to Compare concept
@@ -18,15 +18,15 @@ namespace HWSorts {
  * @param end - iterator to the element after last one
  * @param comp - comparison function object
  */
-template<typename ConstRandomIterator, typename Comparison>
-void bubbleSort (ConstRandomIterator array, ConstRandomIterator end, Comparison comp) {
+template<typename RandomIterator, typename Comparison>
+void bubbleSort (RandomIterator array, RandomIterator end, Comparison comp) {
 
     using std::swap;
 
     std::size_t size = std::distance (array, end);
     for (std::size_t i = 0; i < size; i++) {
 
-        ConstRandomIterator bubble = array;
+        RandomIterator bubble = array;
 
         while (std::distance(bubble, end) != 1) {
 
@@ -41,7 +41,7 @@ void bubbleSort (ConstRandomIterator array, ConstRandomIterator end, Comparison 
 /**
  * Sorting data using qsort with Hoare partition scheme.
  *
- * ConstRandomIterator - Iterator that complies to RandomAccessIterator concept
+ * RandomIterator - Iterator that complies to RandomAccessIterator concept
  * Type dereferenced by iterator must comply to:
  *  Swappable, MoveAssignable and MoveConstructable concept
  * Comp must be must compy to Compare concept
@@ -50,8 +50,8 @@ void bubbleSort (ConstRandomIterator array, ConstRandomIterator end, Comparison 
  * @param end - iterator to the element after last one
  * @param comp - comparison function object
  */
-template<typename ConstRandomIterator, typename Comparison>
-void qsort (ConstRandomIterator array, ConstRandomIterator end, Comparison comp) {
+template<typename RandomIterator, typename Comparison>
+void qsort (RandomIterator array, RandomIterator end, Comparison comp) {
     using std::swap;
 
     std::size_t size = std::distance(array, end);
@@ -100,8 +100,8 @@ void qsort (ConstRandomIterator array, ConstRandomIterator end, Comparison comp)
  * 
  * @see bubbleSort
  */
-template<typename ConstRandomIterator>
-void bubbleSort (ConstRandomIterator array, ConstRandomIterator end) {
+template<typename RandomIterator>
+void bubbleSort (RandomIterator array, RandomIterator end) {
     bubbleSort(array, end, std::less<decltype(*array)>());
 }
 
@@ -110,8 +110,8 @@ void bubbleSort (ConstRandomIterator array, ConstRandomIterator end) {
  * 
  * @see qsort
  */
-template<typename ConstRandomIterator>
-void qsort (ConstRandomIterator array, ConstRandomIterator end) {
+template<typename RandomIterator>
+void qsort (RandomIterator array, RandomIterator end) {
     qsort(array, end, std::less<decltype(*array)>());
 }
 

@@ -22,22 +22,24 @@ std::vector<Flat> getFlats(const std::string& filename) {
         std::getline (file, in);
         if (in.empty())
             continue;
-        auto get = [](std::string& str) {
-            std::size_t comma = str.find(',');
-            std::string result(str.begin(), str.begin() + comma);
-            str.erase(0, comma + 1);
-            return result;
-        };
-        Flat flat;
-        flat.number = atoi(get(in).c_str());
-        flat.roomsNumber = atoi(get(in).c_str());
-        flat.ownerName = get(in) + " ";
-        flat.ownerName.append (get(in) + " ");
-        flat.ownerName.append (get(in));
-        flat.occupantsNumber = atoi(in.c_str());
+        Flat flat(std::move(in));
         flats.push_back(std::move(flat));
     }
     return flats;
+}
+
+void saveFlats (const std::string& name, const std::vector<Flat>& flats) {
+    std::ofstream file;
+    file.open (name, std::ios::out);
+    if (!file)
+    {
+        throw std::runtime_error("Cant open file:" + std::string{name});
+    }
+
+    for (const auto& flat : flats) {
+        std::string line = flat.serialize();
+        file << line << "\n";
+    }
 }
 
 namespace {
@@ -59,8 +61,9 @@ void generateSort (std::string name, Function sorting) {
     std::ofstream file;
     file.open (name + "_result.csv", std::ios::out);
 
-    for (std::size_t i = 1; i <= 20; i++) {
-        auto flats = getFlats ("flats/flats" + std::to_string(i * 1000));
+    std::size_t sizes[] = {10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000};
+    for (auto size : sizes) {
+        auto flats = getFlats ("flats/flats" + std::to_string(size));
 
         Statistics::swaps = 0;
         Statistics::comparisons = 0;
@@ -70,16 +73,16 @@ void generateSort (std::string name, Function sorting) {
 
         sorting(flats.begin(), flats.end(), [](const Flat& a, const Flat& b) {
                 Statistics::comparisons++;
-                return a.ownerName < b.ownerName; });
+                return a < b; });
 
         end_time = std::chrono::system_clock::now();
         std::size_t duration = std::chrono::duration_cast<std::chrono::microseconds>
                                                          (end_time - start_time).count();
          
-        if ( !std::is_sorted(flats.begin(), flats.end(), [](const Flat& a, const Flat& b) {
-                 return a.ownerName < b.ownerName;
-                 }) )
+        if ( !std::is_sorted(flats.begin(), flats.end()) )
                 throw std::runtime_error("Bad sorting");
+        
+        saveFlats("sorted/" + name + std::to_string(size), flats);
 
         file << flats.size() << "," << duration << "," << Statistics::comparisons << "," << Statistics::swaps << "\n";
         std::cout << name << ":" << flats.size() << " evaluated:" << duration << "\n";
