@@ -61,7 +61,11 @@ void generateSort (std::string name, Function sorting) {
     std::ofstream file;
     file.open (name + "_result.csv", std::ios::out);
 
-    std::size_t sizes[] = {10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000};
+    std::vector<std::size_t> sizes = {10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000,
+                                      50000, 100000, 200000, 500000, 1000000};
+    if (name == "bubbleSort")
+        sizes.erase (sizes.end() - 4, sizes.end());
+
     for (auto size : sizes) {
         auto flats = getFlats ("flats/flats" + std::to_string(size));
 
