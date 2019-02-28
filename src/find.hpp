@@ -36,7 +36,6 @@ namespace HWFind {
      * @return iterator to the found element or end iterator if it wasn't found.
      */
     template<typename RandomIterator, typename T>
-    template<typename RandomIterator, typename T>
     RandomIterator binarySearch (RandomIterator begin, RandomIterator end, const T& value) {
         RandomIterator notFound = end;
         std::size_t distance = end - begin;
