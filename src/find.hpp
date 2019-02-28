@@ -7,6 +7,15 @@
 
 namespace HWFind {
 
+    /*
+     * Searches for element in array. Using straight search.
+     *
+     * @param begin - iterator to the first element
+     * @param end   - iterator to the element after last
+     * @param value - value to search for
+     *
+     * @return iterator to the found element or end iterator if it wasn't found.
+     */
     template<typename RandomIterator, typename T>
     RandomIterator straightSearch (RandomIterator begin, RandomIterator end, const T& value) {
         while (begin != end) {
@@ -17,6 +26,16 @@ namespace HWFind {
         return end;
     }
 
+    /*
+     * Searches for element in array. Using binary search.
+     *
+     * @param begin - iterator to the first element
+     * @param end   - iterator to the element after last
+     * @param value - value to search for
+     *
+     * @return iterator to the found element or end iterator if it wasn't found.
+     */
+    template<typename RandomIterator, typename T>
     template<typename RandomIterator, typename T>
     RandomIterator binarySearch (RandomIterator begin, RandomIterator end, const T& value) {
         RandomIterator notFound = end;
