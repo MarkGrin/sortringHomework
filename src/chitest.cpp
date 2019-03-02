@@ -7,13 +7,14 @@
 namespace chitest {
 
 std::vector<result> test(prng_func_ptr function, std::size_t range, std::size_t elements, std::size_t repeat,
-                         double chi_level_accepted) {
+                         double chi_level_accepted, std::size_t dof) {
 
     std::vector<result> results;
+    double dof_koef = static_cast<double>(dof) / range;
     for (std::size_t j = 0; j < repeat; j++) {
         result res;
         std::map<uint32_t, uint32_t> map;
-        uint32_t state = j + 1;
+        uint32_t state = j + 100;
         res.deviation = 0;
         res.mean = 0;
         res.variation = 0;
@@ -24,6 +25,7 @@ std::vector<result> test(prng_func_ptr function, std::size_t range, std::size_t 
             res.min = std::min(value, res.min);
             res.deviation += (predicted_mean - value) * (predicted_mean - value);
             res.mean += value;
+            value = value*dof_koef;
             if (map.find(value) == map.end())
                 map[value] = 0;
             map[value] += 1;
@@ -35,11 +37,11 @@ std::vector<result> test(prng_func_ptr function, std::size_t range, std::size_t 
         res.accepted_chi_level = chi_level_accepted;
 
         res.chi_level = 0;
-        for (std::size_t i = 0; i < range; i++) {
+        for (std::size_t i = 0; i < dof; i++) {
             double got = 0;
             if (map.find(i) != map.end())
                 got = map[i];
-            double expected = static_cast<double>(elements) / range;
+            double expected = static_cast<double>(elements) / dof;
             res.chi_level += (got - expected) * (got - expected) / expected;
         }
         res.passed = false;
