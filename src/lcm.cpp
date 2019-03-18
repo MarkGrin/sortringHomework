@@ -1,6 +1,8 @@
 #include "lcm.hpp"
 
 
+// Стерджеса
+// Knuth
 namespace lcm {
 
     uint32_t generate(uint32_t &state, uint32_t range) {

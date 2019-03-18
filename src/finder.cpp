@@ -36,15 +36,15 @@ namespace {
         return flats;
     }
 
-    std::vector<Flat>::iterator straightSearch(std::vector<Flat> &flats, Flat flat) {
+    std::vector<Flat> straightSearch(std::vector<Flat> &flats, Flat flat) {
         return HWFind::straightSearch(flats.begin(), flats.end(), flat);
     }
 
-    std::vector<Flat>::iterator binSearchNoSort(std::vector<Flat> &flats, Flat flat) {
+    std::vector<Flat> binSearchNoSort(std::vector<Flat> &flats, Flat flat) {
         return HWFind::binarySearch(flats.begin(), flats.end(), flat);
     }
 
-    std::vector<Flat>::iterator binSearchWithSort(std::vector<Flat> &flats, Flat flat) {
+    std::vector<Flat> binSearchWithSort(std::vector<Flat> &flats, Flat flat) {
         HWSorts::qsort(flats.begin(), flats.end());
         return HWFind::binarySearch(flats.begin(), flats.end(), flat);
     }
@@ -82,12 +82,16 @@ namespace {
                 start_time = std::chrono::system_clock::now();
 
                 std::vector<Flat>::iterator it;
+                std::vector<Flat>::iterator end;
+                std::vector<Flat> founds;
 
 
                 if (do_map)
                     map.find(flat.number);
-                else
-                    it = search_func(flats, flat);
+                else {
+                    founds = search_func(flats, flat);
+                    it = founds.begin();
+                }
 
 
                 end_time = std::chrono::system_clock::now();
@@ -111,7 +115,7 @@ namespace {
 }
 
 int main () {
-    try {
+/*    try {
         generateSort("bin_no_sort", binSearchNoSort, true, false);
         generateSort("bin_sort", binSearchWithSort, false, false);
         generateSort("straight", straightSearch, false, false);
@@ -120,6 +124,18 @@ int main () {
     catch (std::runtime_error& e) {
         std::cout << e.what() << "\n";
         return 1;
-    }
+    }*/
+    std::vector<int> values{0, 1, 3, 5, 5, 7};
+    
+    std::cout << "STRAIGHT\n";
+    std::vector<int> foundS = HWFind::straightSearch(values.begin(), values.end(), 5);
+    for (const auto& found : foundS)
+        std::cout << found << "\n";
+
+    std::cout << "BINARY\n";
+    std::vector<int> foundB = HWFind::binarySearch(values.begin(), values.end(), 5);
+    for (const auto& found : foundB)
+        std::cout << found << "\n";
+
     return 0;
 }

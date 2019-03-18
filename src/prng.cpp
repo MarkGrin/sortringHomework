@@ -12,7 +12,7 @@ uint32_t stdcrand(uint32_t& state, uint32_t range) {
 
 int main () {
     srand(time(0));
-    constexpr std::size_t range = 5000, elements = 30000, tries = 10, chi_accept = 82, dof = 100;
+    constexpr std::size_t range = 5000, elements = 30000, tries = 10, chi_accept = 82, dof = 35;
     std::cout << "RANGE:" << range << "\n";
     std::cout << "ELEMENTS:" << elements << "\n";
     std::cout << "TRIES:" << tries << "\n";
@@ -28,19 +28,22 @@ int main () {
     
     for (auto& test : tests) {
         std::cout << "NAME:" << test.name << "\n";
-        auto results = chitest::test(test.func, range, elements, tries, chi_accept, dof);
+        auto results = chitest::test(test.func);
         double chi_mean = 0;
+        double level_mean = 0;
         for (const auto& result : results) {
             std::cout << "min|max: " << result.min << "|" << result.max << "\n";
             std::cout << "mean|deviation|variation: ";
             std::cout << result.mean << "|" << result.deviation << "|" << result.variation << "\n";
-            std::cout << "chi|level|passed:";
-            std::cout << result.chi_level << "|" << result.accepted_chi_level;
-            std::cout << (result.passed ? "|PASSED\n" : "|FAILED\n");
+            std::cout << "chi|percentile: ";
+            std::cout << result.chi_level << "|" << result.percentile << "\n";
             chi_mean += result.chi_level;
+            level_mean += result.percentile;
         }
         chi_mean /= results.size();
+        level_mean /= results.size();
         std::cout << "CHI MEAN:" << chi_mean << "\n";
+        std::cout << "PERCENTILE MEAN:" << level_mean << "\n";
         std::cout << "\n-----------\n";
     }
 }

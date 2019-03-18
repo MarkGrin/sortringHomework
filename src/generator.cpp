@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <random>
+#include <cstdlib>
 
 /**
  * This program generates csv output of pseudo random Russian flats
@@ -25,9 +26,11 @@ int main (int argc, char** argv) {
     std::vector<Flat> flats;
     for (std::size_t i = 0; i < size; i++) {
         Flat flat;
-        flat.number = rand() % size;
+        flat.number = i;
         flat.roomsNumber = rand() % 3 + 1;
-        flat.ownerName = surname.getNextName() + "," + name.getNextName() + "," + patronymic.getNextName();
+        flat.ownerName;// = surname.getNextName() + "," + name.getNextName() + "," + patronymic.getNextName();
+        for (std::size_t i = 0; i < 30; i++)
+              flat.ownerName.push_back('a' + rand() % 20);
         flat.occupantsNumber = rand() % 3 + 1;
         flats.push_back(flat);
     }
