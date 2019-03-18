@@ -16,12 +16,10 @@ struct result {
     double deviation;
     double variation;
     double chi_level;
-    double accepted_chi_level;
-    bool passed;
+    double percentile;
 };
 
-std::vector<result> test(prng_func_ptr function, std::size_t range, std::size_t elements, std::size_t repeat,
-                         double accepted_chi_level, std::size_t dof);
+std::vector<result> test(prng_func_ptr function);
 
 }
 

@@ -4,11 +4,42 @@
 #include <algorithm>
 #include <cmath>
 
+namespace {
+double findPercentile(double score) {
+     std::vector<std::pair<double, double>> scores = {{5 , 18.7},
+                                                      {10, 20.43},
+                                                      {15, 22.7},
+                                                      {20, 27.85},
+                                                      {25, 29.05},
+                                                      {30, 30.17},
+                                                      {35, 31.21},
+                                                      {40, 32.28},
+                                                      {45, 33.05},
+                                                      {50, 34.5},
+                                                      {55, 35.38},
+                                                      {60, 36.47},
+                                                      {65, 37.63},
+                                                      {70, 38.85},
+                                                      {75, 40.22},
+                                                      {80, 41.77},
+                                                      {85, 43.15},
+                                                      {90, 46.22},
+                                                      {95, 49.8}};
+     double level = 0;
+     for (const auto& pair : scores) {
+         level = pair.first;
+         if (score < pair.second)
+             break;
+     }
+     return level;
+}
+
+} // namespace
+
 namespace chitest {
 
-std::vector<result> test(prng_func_ptr function, std::size_t range, std::size_t elements, std::size_t repeat,
-                         double chi_level_accepted, std::size_t dof) {
-
+std::vector<result> test(prng_func_ptr function) {
+    constexpr std::size_t range = 5000, elements = 30000, repeat = 10, dof = 35;
     std::vector<result> results;
     double dof_koef = static_cast<double>(dof) / range;
     for (std::size_t j = 0; j < repeat; j++) {
@@ -19,6 +50,7 @@ std::vector<result> test(prng_func_ptr function, std::size_t range, std::size_t 
         res.mean = 0;
         res.variation = 0;
         double predicted_mean = static_cast<double>(range - 1) / 2;
+        res.max = res.min = function(state, range);;
         for (std::size_t i = 0; i < elements; i++) {
             auto value = function(state, range);
             res.max = std::max(value, res.max);
@@ -34,7 +66,6 @@ std::vector<result> test(prng_func_ptr function, std::size_t range, std::size_t 
         res.deviation /= elements;
         res.deviation = std::sqrt(res.deviation);
         res.variation = res.deviation / res.mean;
-        res.accepted_chi_level = chi_level_accepted;
 
         res.chi_level = 0;
         for (std::size_t i = 0; i < dof; i++) {
@@ -44,15 +75,12 @@ std::vector<result> test(prng_func_ptr function, std::size_t range, std::size_t 
             double expected = static_cast<double>(elements) / dof;
             res.chi_level += (got - expected) * (got - expected) / expected;
         }
-        res.passed = false;
-        if (res.accepted_chi_level >= res.chi_level)
-            res.passed = true;
+        res.percentile = findPercentile(res.chi_level);
 
         results.push_back(res);
     }
     return results;
 }
-
 
 
 } // chitest
