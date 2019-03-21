@@ -25,8 +25,12 @@ struct Entry {
 };
 
 class Logger : public Singleton<Logger> {
+    friend class Singleton<Logger>;
 
     std::list<Entry> entries;
+
+    private:
+    Logger () = default;
 
     public:
 
